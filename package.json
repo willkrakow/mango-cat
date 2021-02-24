@@ -5,6 +5,8 @@
   "version": "0.1.0",
   "author": "William Krakow <willkrakow@gmail.com>",
   "dependencies": {
+    "@material-ui/core": "^4.11.3",
+    "@material-ui/icons": "^4.11.2",
     "bootstrap": "^4.6.0",
     "gatsby": "^2.32.3",
     "gatsby-image": "^2.11.0",
@@ -35,7 +37,7 @@
     "develop": "gatsby develop",
     "format": "prettier --write \"**/*.{js,jsx,ts,tsx,json,md}\"",
     "start": "npm run develop",
-    "serve": "gatsby serve",
+    "serve": "gatsby serve --prefix-paths",
     "clean": "gatsby clean",
     "test": "echo \"Write tests! -> https://gatsby.dev/unit-testing\" && exit 1"
   },

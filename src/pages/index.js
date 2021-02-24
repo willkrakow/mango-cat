@@ -4,6 +4,7 @@ import { Button, Container, Row, Col } from 'react-bootstrap'
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import Image from '../components/image'
+import { Send, House } from '@material-ui/icons'
 
 const IndexPage = () => (
   <Layout>
@@ -29,9 +30,13 @@ const IndexPage = () => (
           <h2>My home</h2>
           <p>
             The WORLD is my home. Okay actually my address is{" "}
-            <span className="font-weight-bold text-info">
+            <a
+              href="https://www.google.com/maps/dir/?api=1&destination=231+W+Margaret+Ln%2C+Hillsborough%2C+NC+27278"
+              alt="231 W Margaret Ln | Google Maps"
+              className="font-weight-bold text-info"
+            >
               231 W Margaret Ln, Hillsborough, NC 27278.
-            </span>{" "}
+            </a>{" "}
             My parents live there too (I let them–they'd be helpless without me)
             and their names are Will and Laura. They're kinda lame because
             they're my parents but they don't bite.
@@ -39,7 +44,7 @@ const IndexPage = () => (
           <h2>What to do with me</h2>
           <div className="ml-2">
             <h3 className="text-info font-weight-bold mb-0">STEP 1</h3>
-            <p>Give me petz</p>
+            <p>Give me snuggles.</p>
             <h3 className="text-info font-weight-bold mb-0">STEP 2</h3>
             <p>
               If it looks like I'm being too good of a hunter or too bad of a
@@ -53,14 +58,17 @@ const IndexPage = () => (
         <Col xs={12} md={10} lg={6}>
           <Link to="/contact">
             <Button color="primary" className="w-100 mb-2">
-              Send a message to Will and Laura
+              <Send className="text-light" /> Send a message to Will and Laura
             </Button>
           </Link>
-          <Link to="/directions">
+          <a
+            href="https://www.google.com/maps/dir/?api=1&destination=231+W+Margaret+Ln%2C+Hillsborough%2C+NC+27278"
+            alt="231 W Margaret Ln | Google Maps"
+          >
             <Button variant="outline" color="primary" className="w-100 mb-2">
-              Directions to Mango's house
+              <House className="text-info" /> Directions to Mango's house
             </Button>
-          </Link>
+          </a>
         </Col>
       </Row>
     </Container>
