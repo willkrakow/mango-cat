@@ -25,7 +25,7 @@ const Layout = ({ children }) => {
   `)
 
   return (
-      <Container fluid className="p-5 bg-light" >
+      <Container fluid className="p-2 p-md-5 bg-light" >
       <Header siteTitle={data.site.siteMetadata?.title || `Mango`} />
         <main>{children}</main>
         <Footer />

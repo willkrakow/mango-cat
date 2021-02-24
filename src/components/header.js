@@ -5,7 +5,7 @@ import React from "react"
 const Header = ({ siteTitle }) => (
   <header>
     <div>
-      <h1 className="text-center display-2">
+      <h1 className="text-center display-1" style={{fontWeight: 200}}>
         <Link className="text-warning" to="/">{siteTitle}</Link>
       </h1>
     </div>
