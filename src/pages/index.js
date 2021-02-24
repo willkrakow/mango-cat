@@ -1,13 +1,55 @@
-import React from "react"
+import React, {useEffect} from "react"
 import { Link } from "gatsby"
 import { Button, Container, Row, Col } from 'react-bootstrap'
 import Layout from "../components/layout"
 import SEO from "../components/seo"
 import Image from '../components/image'
 import { Send, House } from '@material-ui/icons'
+import Qr from '../components/qr'
+import Cookies from "universal-cookie"
 
-const IndexPage = () => (
+
+const IndexPage = () => {
+
+
+function encode(data) {
+  return Object.keys(data)
+    .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
+    .join("&")
+}
+
+useEffect(() => {
+  const today = new Date()
+  const tomorrow = new Date(today)
+  tomorrow.setDate(tomorrow.getDate() + 1)
+  const cookies = new Cookies()
+
+  const formSubmit = () => {
+    fetch("/", {
+      method: "POST",
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: encode({
+        "form-name": "page-hit",
+        "data-netlify": "true",
+        "page-alert": "You had a new visitor",
+        "data-netlify-honeypot": "bot-field"
+      }),
+    })
+      .then(() => console.log("Sent notification to Netlify"))
+      .catch(error => alert(error))
+  }
+
+  if (cookies.get("visitedMangoCat") === "true") {
+    formSubmit()
+  } else {
+    cookies.set("visitedMangoCat", "true", { path: "/", expires: tomorrow })
+    formSubmit()
+  }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+}, [])
+return (
   <Layout>
+    <Qr />
     <SEO title="Home" />
     <Container>
       <Row className="justify-content-center mb-3">
@@ -73,6 +115,5 @@ const IndexPage = () => (
       </Row>
     </Container>
   </Layout>
-)
-
+)}
 export default IndexPage
