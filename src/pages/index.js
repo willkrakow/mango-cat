@@ -5,7 +5,6 @@ import Layout from "../components/layout"
 import SEO from "../components/seo"
 import Image from '../components/image'
 import { Send, House } from '@material-ui/icons'
-import Qr from '../components/qr'
 import Cookies from "universal-cookie"
 
 
@@ -35,21 +34,25 @@ useEffect(() => {
         "data-netlify-honeypot": "bot-field"
       }),
     })
-      .then(() => console.log("Sent notification to Netlify"))
+      .then((res) => res.ok ? console.log("Sent notification to Netlify") : console.log("something went wrong"))
       .catch(error => alert(error))
   }
 
+  const queryString = window.location.search
+  const urlParams = new URLSearchParams(queryString)
+  const fromQr = urlParams.get('qr')
   if (cookies.get("visitedMangoCat") === "true") {
-    formSubmit()
-  } else {
+   console.log("you were already here!")
+  } else if (fromQr === "true") {
     cookies.set("visitedMangoCat", "true", { path: "/", expires: tomorrow })
     formSubmit()
-  }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
-}, [])
+  } 
+    else {
+      console.log("Just someone browsing")
+    }
+})
 return (
   <Layout>
-    <Qr />
     <SEO title="Home" />
     <Container>
       <Row className="justify-content-center mb-3">
