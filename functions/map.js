@@ -8,7 +8,7 @@ exports.handler = async function (request, context) {
   }
   const getIpInfo = async () => {
     const response = await fetch(
-      `https://ipinfo.io/107.15.16.67?token=76509fbee1f6a6`
+      `https://ipinfo.io/107.15.16.67?token=${process.env.IP_INFO_TOKEN}`
     )
     const json = await response.json()
     return json
