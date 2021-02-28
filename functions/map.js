@@ -1,4 +1,5 @@
 const fetch = require('node-fetch')
+const {URLSearchParams} = require('url')
 
 exports.handler = async function (request, context) {
   function encode(data) {
@@ -15,33 +16,26 @@ exports.handler = async function (request, context) {
   }
 
   const getAddress = async (ipData) => {
-    const latlng = await ipData.loc
-    const key = process.env.GEOLOCATION_KEY
-    const url = `${process.env.GEOLOCATION_URL}latlng=${latlng}&key=${key}`
-    const address = await fetch(url)
-    const json = await address.json()
+    const url = `${process.env.GEOLOCATION_URL}latlng=${ipData.loc}&key=${process.env.GEOLOCATION_KEY}`
+    const locationData = await fetch(url)
+    const json = await locationData.json()
     return json.results[0].formatted_address
   }
 
   // submit form to netlify with city and region info fetched above
   const formSubmit = async (ipData, address) => {
-    const cityData = ipData.city
-    const regionData = ipData.region
-    const addressData = address
+    const params = new URLSearchParams()
+    params.append('city', ipData.city)
+    params.append('region', ipData.region)
+    params.append('address', address)
+    params.append('data-netlify', true)
+    params.append('data-netlify-honeypot', "bot-field")
+    params.append('form-name', 'page-hit')
     const response = await fetch("https://themangocat.com/", {
       method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: JSON.stringify({
-        "form-name": "page-hit",
-        "data-netlify": "true",
-        "page-alert": "You had a new visitor",
-        "data-netlify-honeypot": "bot-field",
-        "city": cityData,
-        "region": regionData,
-        "address": addressData
-      })
+      body: params
     })
-    const json = await response.text()
+    const json = await response.json()
     return json
   }
 
@@ -49,14 +43,24 @@ exports.handler = async function (request, context) {
       const ipData = await getIpInfo()
       const address = await getAddress(ipData)
       const res = await formSubmit(ipData, address)
-      res
-        ? console.log("Recorded ip location")
-        : console.log("Something went wrong")
+      if (res) {
+        console.log('callInOrder ran okay')
+        return true
+      }
+      else {
+        return false
+      }
   }
 
-  callInOrder()
+  const alright = await callInOrder()
+  if (alright) {
+    return {
+      statusCode: 200,
+      body: JSON.stringify({message: "Map.js ran okay"})
+    }
+  }
   return {
     statusCode: 200,
-    body: JSON.stringify({ message: "Map.js ran" }),
+    body: JSON.stringify({ message: "something went wrong at the end" })
   }
 }
