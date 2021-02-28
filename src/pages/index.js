@@ -5,83 +5,20 @@ import Layout from "../components/layout"
 import SEO from "../components/seo"
 import Image from '../components/image'
 import { Send, House } from '@material-ui/icons'
-import Cookies from "universal-cookie"
 
 
 const IndexPage = () => {
 
-
-function encode(data) {
-  return Object.keys(data)
-    .map(key => encodeURIComponent(key) + "=" + encodeURIComponent(data[key]))
-    .join("&")
-}
-
 useEffect(() => {
-  
-  // check for the cookie
-  const hasCookie = () => {
-    const cookies = new Cookies()
-    if(cookies.get("visitedMangoCat") === true){
-      return true
+   const queryString = window.location.search
+   const urlParams = new URLSearchParams(queryString)
+   const fromQr = urlParams.get("qr")
+
+    if (fromQr === "true") {
+  // send request to netlify function 
+      fetch('/.netlify/functions/map')
     }
-    return false
-  }
-  // set the expiration to one day later and set visitedMangoCat cookie
-  const setCookie = () => {
-    const cookies = new Cookies()
-    const today = new Date()
-    const tomorrow = new Date(today)
-    tomorrow.setDate(tomorrow.getDate() + 1)
-    cookies.set("visitedMangoCat", "true", { path: "/", expires: tomorrow })
-    console.log(cookies.get('visitedMangoCat'))
-  }
-
-  // send request to ipinfo.io and return ip metadata object
-  const getIpInfo = async () => {
-        const response = await fetch(
-          "https://ipinfo.io/json?token=76509fbee1f6a6"
-        )
-        const json = await response.json()
-        return json
-  }
-
-  // submit form to netlify with city and region info fetched above
-  const formSubmit = async ({city, region}) => {
-    const response = await fetch("/", {
-      method: "POST",
-      headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: encode({
-        "form-name": "page-hit",
-        "data-netlify": "true",
-        "page-alert": "You had a new visitor",
-        "data-netlify-honeypot": "bot-field",
-        "city": city,
-        "region": region
-      })
-    })
-    const json = await response.json()
-    return json
-  }
-
-  const callInOrder = async ({ hasCookie }) => {
-    const queryString = window.location.search
-    const urlParams = new URLSearchParams(queryString)
-    const fromQr = urlParams.get('qr')
-
-    if (fromQr === "true"){
-      !hasCookie && setCookie()
-      const ipData = await getIpInfo()
-      const res = await formSubmit(ipData.city, ipData.region)
-      res.ok
-      ? console.log("Recorded ip location")
-      : console.log("Something went wrong")
-    }
-  }
-
-  const cookiePresent = hasCookie()
-  callInOrder(cookiePresent)
-})
+}, [])
 
 return (
   <Layout>
