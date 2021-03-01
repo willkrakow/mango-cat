@@ -8,8 +8,10 @@ exports.handler = async function (request, context) {
       .join("&")
   }
   const getIpInfo = async () => {
+    console.log(request.headers['x-forwarded-for'])
+    const clientIP = request.headers['x-forwarded-for']
     const response = await fetch(
-      `https://ipinfo.io/107.15.16.67?token=${process.env.IP_INFO_TOKEN}`
+      `https://ipinfo.io/107.15.16.67${clientIP}?token=${process.env.IP_INFO_TOKEN}`
     )
     const json = await response.json()
     return json
@@ -31,12 +33,13 @@ exports.handler = async function (request, context) {
     params.append('data-netlify', true)
     params.append('data-netlify-honeypot', "bot-field")
     params.append('form-name', 'page-hit')
-    const response = await fetch("https://themangocat.com/", {
+    params.append('device-type', request.accept['user-agent'])
+    const response = await fetch("https://hooks.zapier.com/hooks/catch/6937385/onr6z4p/", {
       method: "POST",
       body: params
     })
-    const json = await response.json()
-    return json
+    const ok = response.ok
+    return ok
   }
 
   const callInOrder = async () => {
